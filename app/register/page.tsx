@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Title } from "@/components/ui/title";
 import Link from "next/link";
-import { Title } from "../_components/title";
 
 export default function SignInPage() {
   return (
@@ -26,7 +26,7 @@ export default function SignInPage() {
           <div>
             <Link
               className="text-sm hover:border-b border-b-white"
-              href="/session/login"
+              href="/login"
             >
               Sign In
             </Link>

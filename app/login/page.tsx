@@ -1,5 +1,5 @@
-import { Title } from "../_components/title";
-import { LoginForm } from "./_components/login-form";
+import { Title } from "@/components/ui/title";
+import { LoginForm } from "./_components/form";
 
 export default function LoginPage() {
   return (

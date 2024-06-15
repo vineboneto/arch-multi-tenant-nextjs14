@@ -1,43 +1,44 @@
-import NextAuth, { AuthError } from "next-auth";
+import NextAuth from "next-auth";
 import { authConfig } from "./auth.config";
 import Credentials from "next-auth/providers/credentials";
-import { z } from "zod";
-import prisma from "./lib/db";
+import { db } from "./lib/drizzle/db";
+import { CustomAuthError } from "./lib/error";
 import bcrypt from "bcrypt";
 
-export const { auth, signIn, signOut } = NextAuth({
+export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
   providers: [
     Credentials({
       async authorize(credentials) {
-        const parsedCredentials = z
-          .object({
-            email: z.string().email(),
-            password: z.string().min(6),
-          })
-          .safeParse(credentials);
+        const { email, password } = credentials as {
+          email: string;
+          password: string;
+        };
 
-        if (parsedCredentials.success) {
-          const { email, password } = parsedCredentials.data;
+        const user = await db.query.users.findFirst({
+          columns: {
+            email: true,
+            id: true,
+            name: true,
+            password: true,
+          },
+          where: (users, { eq }) => eq(users.email, email),
+        });
 
-          const user = await prisma.users.findFirst({
-            select: { email: true, name: true, password: true, id: true },
-            where: { email },
-          });
+        if (!user)
+          throw new CustomAuthError("Invalid credentials", "AccountNotLinked");
 
-          if (!user) return null;
+        const passwordMatch = await bcrypt.compare(password, user.password);
 
-          const passwordMatch = await bcrypt.compare(password, user.password);
-
-          if (passwordMatch)
-            return {
-              email: user.email,
-              name: user.name,
-              id: String(user.id),
-            };
+        if (!passwordMatch) {
+          throw new CustomAuthError("Invalid credentials", "CredentialsSignin");
         }
 
-        return null;
+        return {
+          email: user.email,
+          name: user.name,
+          id: String(user.id),
+        };
       },
     }),
   ],

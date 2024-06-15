@@ -1,36 +1,20 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Arch Multi Tenant NextJS 14
 
-## Getting Started
+Minha arch para multi tenant compartilhando o mesmo domain e para aprender mais sobre NextJS14.
 
-First, run the development server:
+- Acho que vou fazer um controle de estoque com produto, imagem e etc, Visando Multi Tenants.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **/app**: contém todas as rotas, componentes e lógica do seu aplicativo, é aqui que você trabalhará principalmente.
+- **/app/lib**: contém funções usadas em seu aplicativo, como funções utilitárias reutilizáveis ​​e funções de busca de dados.
+- **/app/ui**: contém todos os componentes de UI do seu aplicativo, como cartões, tabelas e formulários. Para economizar tempo, pré-estilizamos esses componentes para você.
+- **/public**: contém todos os ativos estáticos do seu aplicativo, como imagens.
+- **/scripts**: contém um script de propagação.
+- **Arquivos de configuração**: arquivos de configuração, como next.config.js na raiz do projeto.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Referências
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- [Template App Playground](https://github.dev/vercel/app-playground)
+- [NextJS Start Learn Course](https://github.com/vercel/next-learn/)
+- [NextJS 14 Documentation](https://nextjs.org/docs/getting-started)
+- [Vercel MultiTenant Arch](https://github.com/vercel/platforms)
+- [NextJS Adding Authentication](https://nextjs.org/learn/dashboard-app/adding-authentication)

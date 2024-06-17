@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ArrowRight, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import type { StackItem } from "./constants";
 import { SIDEBAR } from "./constants";
@@ -57,17 +57,23 @@ function NavParent({
       onClick={() => addStack(renderChildren())}
     >
       <Icon className="h-5 w-5" />
-      <span className="text-sm">{label}</span>
+      <span className="text-sm truncate">{label}</span>
+      <div className="flex flex-1 justify-end">
+        <ChevronRight className="h-4 w-4" />
+      </div>
     </li>
   );
 }
 
 function NavLink({ item: { href, icon: Icon, label } }: NavLinkProps) {
   return (
-    <li className="flex hover:bg-stone-800 space-x-2 items-center py-1.5 rounded-lg px-2">
-      <Icon className="h-5 w-5" />
-      <Link href={href} className="text-sm">
-        {label}
+    <li className="w-full">
+      <Link
+        href={href}
+        className="flex hover:bg-stone-800 items-center py-1.5 rounded-lg px-2 text-sm"
+      >
+        <Icon className="h-5 w-5" />
+        <span className="ml-2">{label}</span>
       </Link>
     </li>
   );
@@ -78,7 +84,7 @@ type MenuStackData = {
   lastMenu: string;
 };
 
-export function Nav() {
+export function Nav({ children }: { children: React.ReactNode }) {
   const [menuStack, setMenuStack] = useState<MenuStackData[]>([]);
 
   const NestedSidebar = menuStack[menuStack.length - 1];
@@ -96,8 +102,8 @@ export function Nav() {
   }
 
   return (
-    <nav className="px-3">
-      <ul>
+    <nav className="px-3 flex flex-col h-full">
+      <ul className="flex-1">
         {hasNestedSidebar ? (
           <>
             <button
@@ -118,6 +124,8 @@ export function Nav() {
           ))
         )}
       </ul>
+
+      {children}
     </nav>
   );
 }

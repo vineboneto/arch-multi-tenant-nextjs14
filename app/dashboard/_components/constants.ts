@@ -22,7 +22,7 @@ export const SIDEBAR: StackItem[] = [
       {
         label: "Produto",
         icon: Barcode,
-        href: "/produto",
+        href: "/dashboard/produto",
       },
     ],
   },

@@ -4,19 +4,23 @@ import { AuthError } from "next-auth";
 import { z } from "./zod-adapter";
 import { StateForm } from "./constants";
 import { redirect } from "next/navigation";
+import { PostgresError } from "postgres";
+
+type FieldErrors<T> = {
+  [K in keyof T]?: string[] | undefined;
+};
 
 const authSchema = z.object({
   email: z.string().email(),
   password: z.string().min(6),
 });
 
-export type LoginFieldErrors = {
-  email?: string[] | undefined;
-  password?: string[] | undefined;
-};
+export type Login = z.infer<typeof authSchema>;
+
+export type LoginFieldErrors = FieldErrors<Login>;
 
 export async function authenticate(
-  prevState: StateForm<LoginFieldErrors>,
+  prevState: StateForm<LoginFieldErrors, void>,
   formData: FormData
 ) {
   try {
@@ -59,5 +63,52 @@ export async function authenticate(
     }
 
     throw error;
+  }
+}
+
+const productSchema = z.object({
+  codigo: z.string().min(1).max(10),
+  nome: z.string().min(1),
+  ativo: z.boolean(),
+  dataCriacao: z.date().nullish(),
+});
+
+export type Product = z.infer<typeof productSchema>;
+
+export type ProductFieldErrors = FieldErrors<Product>;
+
+export async function createProduct(
+  prevState: StateForm<ProductFieldErrors, { data: { id: number } }>,
+  formData: FormData
+) {
+  try {
+    const validate = productSchema.safeParse({
+      codigo: formData.get("codigo"),
+      nome: formData.get("nome"),
+      ativo:
+        formData.get("ativo") === "S"
+          ? true
+          : formData.get("ativo") === "N"
+          ? false
+          : undefined,
+      dataCriacao: formData.get("dataCriacao"),
+    });
+
+    console.log({ validate }, validate.error);
+
+    if (!validate.success) {
+      return {
+        errors: validate.error.flatten().fieldErrors,
+      };
+    }
+
+    return { id: 1 };
+  } catch (err) {
+    if (err instanceof PostgresError) {
+      return {
+        message: "Algo de errado aconteceu tente novamente mais tarde",
+      };
+    }
+    throw err;
   }
 }

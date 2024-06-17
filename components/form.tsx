@@ -3,28 +3,40 @@ import { InputError } from "./ui/input-error";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { StateForm } from "@/lib/constants";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
-type FormContextData<T extends { [key: string]: string[] | undefined }> = {
-  state: StateForm<T>;
+type FormContextData<T extends { [key: string]: string[] | undefined }, R> = {
+  state: StateForm<T, R>;
 };
 
-const FormContext = createContext<FormContextData<any>>({
+const FormContext = createContext<FormContextData<any, any>>({
   state: undefined,
 });
 
-type PropsGroup<T> = {
-  state: StateForm<T>;
+type PropsGroup<T, R> = {
+  state: StateForm<T, R>;
   children: React.ReactNode;
 };
 
-export function FormProvider<T>({ children, state }: PropsGroup<T>) {
+export function FormProvider<T, R>({ children, state }: PropsGroup<T, R>) {
   return (
     <FormContext.Provider value={{ state }}>{children}</FormContext.Provider>
   );
 }
 
 export const Form = {
-  Root<T>({ state, ...props }: React.ComponentProps<"form"> & PropsGroup<T>) {
+  Root<T, R = void>({
+    state,
+    ...props
+  }: React.ComponentProps<"form"> & PropsGroup<T, R>) {
     return (
       <FormProvider state={state}>
         <form {...props} />
@@ -52,5 +64,39 @@ export const Form = {
   },
   Group({ ...props }: React.ComponentProps<"div">) {
     return <div {...props} className="space-y-1" />;
+  },
+  Select({
+    options,
+    placeholder,
+    name,
+    showError = true,
+    ...rest
+  }: React.ComponentProps<"select"> & {
+    options: { value: string; label: string }[];
+    placeholder?: string;
+    showError?: boolean;
+  }) {
+    const { state } = useContext(FormContext);
+
+    const messageError = name ? state?.errors?.[name]?.[0] : undefined;
+    return (
+      <>
+        <Select {...rest} name={name}>
+          <SelectTrigger>
+            <SelectValue placeholder={placeholder} />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              {options.map((item) => (
+                <SelectItem key={item.value} value={item.value}>
+                  {item.label}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+        {showError && messageError && <InputError>{messageError}</InputError>}
+      </>
+    );
   },
 };

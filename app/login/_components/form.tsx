@@ -11,7 +11,7 @@ import { StateForm } from "@/lib/constants";
 import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 
-const initialState: StateForm<LoginFieldErrors> = undefined;
+const initialState: StateForm<LoginFieldErrors, void> = undefined;
 
 export function LoginForm() {
   const [state, dispatch] = useFormState(authenticate, initialState);

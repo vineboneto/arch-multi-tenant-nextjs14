@@ -8,7 +8,7 @@ import { ProductFieldErrors, createProduct } from "@/lib/actions";
 import { ATIVO_OPTIONS, StateForm } from "@/lib/constants";
 
 import { Button } from "@/components/ui/button";
-import BrowserV6Field from "@/components/date-picker/data-picker";
+import BrowserV6Field from "@/components/date-picker/date-picker";
 
 const initialState: StateForm<ProductFieldErrors, { data: { id: number } }> =
   undefined;

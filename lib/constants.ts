@@ -1,4 +1,4 @@
-export type StateForm<T, R = unknown> =
+export type StateForm<T, R = undefined> =
   | {
       errors?: T;
       message?: string;

@@ -70,7 +70,7 @@ const productSchema = z.object({
   codigo: z.string().min(1).max(10),
   nome: z.string().min(1),
   ativo: z.boolean(),
-  dataCriacao: z.date().nullish(),
+  dataCriacao: z.date().nullable(),
 });
 
 export type Product = z.infer<typeof productSchema>;
@@ -91,7 +91,7 @@ export async function createProduct(
           : formData.get("ativo") === "N"
           ? false
           : undefined,
-      dataCriacao: formData.get("dataCriacao"),
+      dataCriacao: undefined,
     });
 
     console.log({ validate }, validate.error);

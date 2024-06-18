@@ -8,7 +8,7 @@ import { ProductFieldErrors, createProduct } from "@/lib/actions";
 import { ATIVO_OPTIONS, StateForm } from "@/lib/constants";
 
 import { Button } from "@/components/ui/button";
-import { DateTimePicker } from "@/components/date-picker/data-picker";
+import BrowserV6Field from "@/components/date-picker/data-picker";
 
 const initialState: StateForm<ProductFieldErrors, { data: { id: number } }> =
   undefined;
@@ -20,7 +20,7 @@ export function FormProduto() {
   return (
     <Form.Root
       action={(data) => {
-        data.append("dataCriacao", new Date().toISOString());
+        data.set("dataCriacao", date?.toISOString() || "");
         dispatch(data);
       }}
       state={state}
@@ -44,18 +44,14 @@ export function FormProduto() {
         />
       </Form.Group>
       <div>
-        <DateTimePicker
+        <BrowserV6Field
           label="Data Criação"
-          jsDate={date}
-          onJsDateChange={setDate}
-          errorMessage={
-            (state && "errors" in state && state?.errors?.dataCriacao?.[0]) ||
-            undefined
-          }
+          name="dataCriacao"
+          value={date}
+          onChange={setDate}
         />
       </div>
       <div>
-        {/* TODO: fix class component */}
         <Button type="submit" size="sm" className="btn-ok">
           Criar
         </Button>

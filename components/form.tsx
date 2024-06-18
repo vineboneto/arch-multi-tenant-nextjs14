@@ -17,7 +17,7 @@ type FormContextData<T extends { [key: string]: string[] | undefined }, R> = {
   state: StateForm<T, R>;
 };
 
-const FormContext = createContext<FormContextData<any, any>>({
+export const FormContext = createContext<FormContextData<any, any>>({
   state: undefined,
 });
 
@@ -71,10 +71,12 @@ export const Form = {
     name,
     showError = true,
     ...rest
-  }: React.ComponentProps<"select"> & {
+  }: Omit<React.ComponentProps<"select">, "value" | "defaultValue" | "dir"> & {
     options: { value: string; label: string }[];
     placeholder?: string;
     showError?: boolean;
+    value?: string | undefined;
+    defaultValue?: string | undefined;
   }) {
     const { state } = useContext(FormContext);
 

@@ -9,19 +9,15 @@ import {
 } from "@/components/ui/table";
 
 import { Header } from "@/components/header";
-import { Container } from "../_components/container";
+import { Container } from "@/components/dashboard/container";
 import { CircleX, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { loadProducts } from "@/lib/actions";
 
-const products = [
-  {
-    codigo: "101",
-    nome: "Teste",
-  },
-];
+export default async function ProdutoPage() {
+  const products = await loadProducts();
 
-export default function ProdutoPage() {
   return (
     <Container>
       <Header.Container>
@@ -47,11 +43,12 @@ export default function ProdutoPage() {
               <TableHead className="w-[100px]">Ação</TableHead>
               <TableHead>Código</TableHead>
               <TableHead>Nome</TableHead>
+              <TableHead>Data Criação</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {products.map((product) => (
-              <TableRow key={product.codigo}>
+              <TableRow key={product.code}>
                 <TableCell className="w-[100px]">
                   <div className="flex space-x-2">
                     <button title="Editar">
@@ -62,8 +59,13 @@ export default function ProdutoPage() {
                     </button>
                   </div>
                 </TableCell>
-                <TableCell className="font-medium">{product.codigo}</TableCell>
-                <TableCell>{product.nome}</TableCell>
+                <TableCell className="font-medium">{product.code}</TableCell>
+                <TableCell>{product.name}</TableCell>
+                <TableCell>
+                  {new Date(product.created_at).toLocaleString("pt-BR", {
+                    dateStyle: "short",
+                  })}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>

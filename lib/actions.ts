@@ -1,10 +1,13 @@
 "use server";
+
 import { signIn } from "@/auth";
 import { AuthError } from "next-auth";
 import { z } from "./zod-adapter";
 import { StateForm } from "./constants";
 import { redirect } from "next/navigation";
-import { PostgresError } from "postgres";
+import { db } from "./drizzle/db";
+import { products } from "./drizzle/schema";
+import postgres from "postgres";
 
 type FieldErrors<T> = {
   [K in keyof T]?: string[] | undefined;
@@ -20,7 +23,7 @@ export type Login = z.infer<typeof authSchema>;
 export type LoginFieldErrors = FieldErrors<Login>;
 
 export async function authenticate(
-  prevState: StateForm<LoginFieldErrors, void>,
+  prevState: StateForm<LoginFieldErrors, never>,
   formData: FormData
 ) {
   try {
@@ -42,7 +45,7 @@ export async function authenticate(
       password: formData.get("password"),
     });
 
-    redirect("/dashboard");
+    return { data: redirect("/dashboard") };
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {
@@ -67,10 +70,9 @@ export async function authenticate(
 }
 
 const productSchema = z.object({
-  codigo: z.string().min(1).max(10),
-  nome: z.string().min(1),
-  ativo: z.boolean(),
-  dataCriacao: z.date().nullish(),
+  code: z.string().min(1).max(10),
+  name: z.string().min(1),
+  active: z.boolean(),
 });
 
 export type Product = z.infer<typeof productSchema>;
@@ -78,21 +80,19 @@ export type Product = z.infer<typeof productSchema>;
 export type ProductFieldErrors = FieldErrors<Product>;
 
 export async function createProduct(
-  prevState: StateForm<ProductFieldErrors, { data: { id: number } }>,
+  prevState: StateForm<ProductFieldErrors, { id: number }>,
   formData: FormData
 ) {
   try {
-    const dataCriacao = formData.get("dataCriacao") as string | undefined;
     const validate = productSchema.safeParse({
-      codigo: formData.get("codigo"),
-      nome: formData.get("nome"),
-      ativo:
-        formData.get("ativo") === "S"
+      code: formData.get("code"),
+      name: formData.get("name"),
+      active:
+        formData.get("active") === "S"
           ? true
-          : formData.get("ativo") === "N"
+          : formData.get("active") === "N"
           ? false
           : undefined,
-      dataCriacao: dataCriacao ? new Date(dataCriacao) : new Date(),
     });
 
     if (!validate.success) {
@@ -101,13 +101,41 @@ export async function createProduct(
       };
     }
 
-    return { id: 1 };
-  } catch (err) {
-    if (err instanceof PostgresError) {
+    const { data } = validate;
+
+    const [result] = await db
+      .insert(products)
+      .values({ code: data.code, name: data.name, created_at: new Date() })
+      .returning({ id: products.id });
+
+    if (!result)
+      return {
+        message: "Algo de errado aconteceu tente novamente mais tarde",
+      };
+
+    return { data: { id: result.id } };
+  } catch (error) {
+    if (error instanceof postgres.PostgresError) {
+      if (error.code === "23505") {
+        return {
+          message:
+            "Erro: O código do produto já está em uso. Por favor, use um código diferente.",
+        };
+      }
+
       return {
         message: "Algo de errado aconteceu tente novamente mais tarde",
       };
     }
-    throw err;
+    throw error;
   }
+}
+
+export async function loadProducts() {
+  // TODO: paginar
+  const data = await db.query.products.findMany({
+    orderBy: (products, { asc }) => [asc(products.created_at)],
+  });
+
+  return data;
 }

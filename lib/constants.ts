@@ -1,10 +1,10 @@
-export type StateForm<T, R = undefined> =
+export type StateForm<T, R = never> =
   | {
       errors?: T;
       message?: string;
+      data?: R;
     }
-  | undefined
-  | R;
+  | undefined;
 
 export const ATIVO_OPTIONS = {
   S: {

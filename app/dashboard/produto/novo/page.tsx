@@ -1,6 +1,6 @@
 import { Header } from "@/components/header";
-import { Container } from "../../_components/container";
-import { FormProduto } from "./_components/form";
+import { Container } from "@/components/dashboard/container";
+import { FormProduto } from "@/components/produto/form";
 
 export default function NovoProdutoPage() {
   return (

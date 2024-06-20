@@ -1,9 +1,9 @@
-import { Button } from "@/components/ui/button";
-import { Nav } from "./_components/nav";
-import { redirect } from "next/navigation";
-import { signOut } from "@/auth";
-import { Separator } from "@/components/ui/separator";
 import { LogOut } from "lucide-react";
+import { redirect } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Nav } from "@/components/dashboard/nav";
+import { Separator } from "@/components/ui/separator";
+import { signOut } from "@/auth";
 
 function Profile() {
   return (

@@ -36,7 +36,13 @@ function Profile() {
   );
 }
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+export default function Layout({
+  children,
+  modal,
+}: {
+  children: React.ReactNode;
+  modal: React.ReactNode;
+}) {
   return (
     <div className="min-h-screen w-full">
       <div className="bg-stone-900 fixed min-h-screen sm:w-60 py-2 grid grid-rows-[5rem_1fr]">
@@ -51,6 +57,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <Profile />
           </div>
         </Nav>
+        {modal}
       </div>
 
       <main className="sm:pl-60">{children}</main>

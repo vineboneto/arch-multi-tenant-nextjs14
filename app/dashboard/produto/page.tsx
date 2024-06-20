@@ -10,10 +10,16 @@ import {
 
 import { Header } from "@/components/header";
 import { Container } from "@/components/dashboard/container";
-import { CircleX, Pencil } from "lucide-react";
+import { Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { loadProducts } from "@/lib/actions";
+import { deleteProduct, loadProducts } from "@/lib/actions";
+import { DeleteProductButton } from "@/components/produto/delete-button";
+
+const formatDate = (d: Date) =>
+  new Date(d).toLocaleString("pt-BR", {
+    dateStyle: "short",
+  });
 
 export default async function ProdutoPage() {
   const products = await loadProducts();
@@ -50,22 +56,17 @@ export default async function ProdutoPage() {
             {products.map((product) => (
               <TableRow key={product.code}>
                 <TableCell className="w-[100px]">
-                  <div className="flex space-x-2">
+                  <div className="flex space-x-2 items-center">
                     <button title="Editar">
                       <Pencil className="w-4 h-4 text-stone-500" />
                     </button>
-                    <button title="Excluir">
-                      <CircleX className="w-4 h-4 text-red-900" />
-                    </button>
+
+                    <DeleteProductButton id={String(product.id)} />
                   </div>
                 </TableCell>
                 <TableCell className="font-medium">{product.code}</TableCell>
                 <TableCell>{product.name}</TableCell>
-                <TableCell>
-                  {new Date(product.created_at).toLocaleString("pt-BR", {
-                    dateStyle: "short",
-                  })}
-                </TableCell>
+                <TableCell>{formatDate(product.created_at)}</TableCell>
               </TableRow>
             ))}
           </TableBody>

@@ -1,5 +1,5 @@
 import { Title } from "@/components/ui/title";
-import { LoginForm } from "./_components/form";
+import { LoginForm } from "@/components/login/form";
 
 export default function LoginPage() {
   return (

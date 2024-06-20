@@ -8,6 +8,8 @@ import { redirect } from "next/navigation";
 import { db } from "./drizzle/db";
 import { products } from "./drizzle/schema";
 import postgres from "postgres";
+import { eq } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
 
 type FieldErrors<T> = {
   [K in keyof T]?: string[] | undefined;
@@ -107,12 +109,12 @@ export async function createProduct(
       .insert(products)
       .values({ code: data.code, name: data.name, created_at: new Date() })
       .returning({ id: products.id });
-
     if (!result)
       return {
         message: "Algo de errado aconteceu tente novamente mais tarde",
       };
 
+    revalidatePath("/dashboard/produto");
     return { data: { id: result.id } };
   } catch (error) {
     if (error instanceof postgres.PostgresError) {
@@ -132,10 +134,23 @@ export async function createProduct(
 }
 
 export async function loadProducts() {
-  // TODO: paginar
   const data = await db.query.products.findMany({
     orderBy: (products, { asc }) => [asc(products.created_at)],
   });
 
   return data;
+}
+
+export async function deleteProduct(
+  prev: any = undefined,
+  formData: FormData
+): Promise<void> {
+  await new Promise((res) => setTimeout(res, 1000 * 5));
+  const productId = Number(formData.get("id"));
+
+  if (!productId) return;
+
+  await db.delete(products).where(eq(products.id, productId));
+  revalidatePath("/dashboard/produto");
+  return;
 }

@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "vercel-build": "prisma generate && prisma migrate deploy && next build",
+    "vercel-build": "deploy && next build",
     "migrate": "pnpm drizzle-kit generate",
     "migrate:exec": "pnpm tsx scripts/migrate.ts",
     "seeds": "pnpm tsx scripts/seeds.ts"

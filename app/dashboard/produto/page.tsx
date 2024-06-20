@@ -28,19 +28,12 @@ export default function ProdutoPage() {
         <Header.Title>Cadastro de Produto</Header.Title>
         <div className="flex flex-1 justify-end space-x-2">
           <div>
-            <Button
-              size="sm"
-              asChild
-              className="bg-green-900 text-white hover:bg-green-800"
-            >
+            <Button size="sm" asChild className="btn-ok">
               <Link href="/dashboard/produto/novo">Novo</Link>
             </Button>
           </div>
           <div>
-            <Button
-              size="sm"
-              className="bg-blue-900 text-white hover:bg-blue-800"
-            >
+            <Button size="sm" className="btn-info">
               Filtros
             </Button>
           </div>

@@ -70,7 +70,7 @@ const productSchema = z.object({
   codigo: z.string().min(1).max(10),
   nome: z.string().min(1),
   ativo: z.boolean(),
-  dataCriacao: z.date().nullable(),
+  dataCriacao: z.date().nullish(),
 });
 
 export type Product = z.infer<typeof productSchema>;
@@ -82,6 +82,7 @@ export async function createProduct(
   formData: FormData
 ) {
   try {
+    const dataCriacao = formData.get("dataCriacao") as string | undefined;
     const validate = productSchema.safeParse({
       codigo: formData.get("codigo"),
       nome: formData.get("nome"),
@@ -91,10 +92,8 @@ export async function createProduct(
           : formData.get("ativo") === "N"
           ? false
           : undefined,
-      dataCriacao: undefined,
+      dataCriacao: dataCriacao ? new Date(dataCriacao) : new Date(),
     });
-
-    console.log({ validate }, validate.error);
 
     if (!validate.success) {
       return {

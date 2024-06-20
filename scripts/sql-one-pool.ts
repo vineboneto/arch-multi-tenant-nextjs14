@@ -1,4 +1,5 @@
-import "@/lib/drizzle/env";
+import { config } from "dotenv";
+config({ path: ".env.local" });
 import postgres from "postgres";
 import * as schema from "@/lib/drizzle/schema";
 import { drizzle } from "drizzle-orm/postgres-js";

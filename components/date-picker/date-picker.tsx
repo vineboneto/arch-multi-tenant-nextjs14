@@ -126,6 +126,7 @@ BrowserDateField.displayName = "BrowserDateField";
 
 const BrowserDatePicker = React.forwardRef(
   (props: DatePickerProps<Dayjs, false>, ref: React.Ref<HTMLDivElement>) => {
+    console.log(props.defaultValue);
     return (
       <DatePicker<Dayjs, false>
         ref={ref}
@@ -141,7 +142,7 @@ const BrowserDatePicker = React.forwardRef(
 
 BrowserDatePicker.displayName = "BrowserDatePicker";
 
-type Props = {
+type Props = Omit<DatePickerProps<Dayjs, false>, "value" | "onChange"> & {
   label?: string;
   name?: string;
   value: Date | null;
@@ -154,6 +155,7 @@ export default function BrowserV6Field({
   name,
   value,
   onChange,
+  ...props
 }: Props) {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="pt-br">
@@ -190,6 +192,7 @@ export default function BrowserV6Field({
             },
           },
         }}
+        {...props}
       />
     </LocalizationProvider>
   );

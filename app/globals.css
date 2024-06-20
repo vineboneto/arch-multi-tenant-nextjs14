@@ -70,7 +70,11 @@
 
 @layer components {
   .btn-ok {
-    @apply bg-green-900 text-white hover:bg-green-800;
+    @apply !bg-green-900 !text-white hover:!bg-green-800;
+  }
+
+  .btn-info {
+    @apply !bg-blue-900 !text-white hover:!bg-blue-800;
   }
 }
 
